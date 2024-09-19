@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  EC2_PUBLIC_IP: ai-aviral-3.devops-days-upes.com  
+  EC2_PUBLIC_IP: ai-aviral-4.devops-days-upes.com
   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  
 
 jobs:
