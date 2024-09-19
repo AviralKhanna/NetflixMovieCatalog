@@ -1,35 +1,35 @@
 #!/bin/bash
 
-# TODO your deploy script implementation...
-#
-#
-# # Navigate to the app directory
-cd ~/app
+# Exit immediately if a command exits with a non-zero status
+set -e
 
-# Check if virtual environment exists, if not, create it
+# Update package lists and install Python 3.12 venv if not already installed
+sudo apt-get update
+sudo apt-get install -y python3.12-venv
+
+# Navigate to the application directory
+cd ~/app || exit
+
+# Create a virtual environment if it doesn't already exist
 if [ ! -d "venv" ]; then
-    echo "Creating Python virtual environment..."
     python3 -m venv venv
 fi
 
 # Activate the virtual environment
 source venv/bin/activate
 
-# Install dependencies from requirements.txt
-if [ -f "requirements.txt" ]; then
-    echo "Installing dependencies..."
-    pip install flask
-else
-    echo "No requirements.txt found. Skipping dependencies installation."
-fi
+# Install required Python packages
+pip install --no-cache-dir -r requirements.txt
 
-# Stop any running app processes (optional)
-# If the app is running on port 8080, kill it first
-echo "Stopping the running app on port 8080 (if any)..."
-sudo fuser -k 8080/tcp || true  # Ignore errors if nothing is running
+# Stop the app service if it's running (optional)
+# Uncomment and modify if using a service manager like systemd
+# sudo systemctl stop netflix-movie-catalog.service
 
-# Start the app on port 8080
-echo "Starting the app..."
-python3 app.py
+# Run the application
+nohup python app.py > app.log 2>&1 &
 
-echo "App deployment complete!"
+# Optional: Start the service using systemd (if applicable)
+# Uncomment and modify if you have a service defined
+# sudo systemctl start netflix-movie-catalog.service
+
+echo "Deployment complete! Application is running in the background."
